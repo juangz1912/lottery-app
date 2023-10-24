@@ -1,35 +1,36 @@
-import React, { Component } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import React, { Component } from "react";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 const cardStyle = {
-  background: "url('https://es.pngtree.com/freebackground/close-up-3d-rendering-of-a-classic-casino-roulette-table-with-a-computer-keyboard-and-a-casino-sign-in-the-background_5584580.html') no-repeat center center fixed",
-  backgroundSize: 'contain',
-  opacity: '1',
+  background:
+    "url('https://es.pngtree.com/freebackground/close-up-3d-rendering-of-a-classic-casino-roulette-table-with-a-computer-keyboard-and-a-casino-sign-in-the-background_5584580.html') no-repeat center center fixed",
+  backgroundSize: "contain",
+  opacity: "1",
 };
 
 const formStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  paddingTop: '20px',
-  paddingBottom: '0px',
-  height: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  paddingTop: "20px",
+  paddingBottom: "0px",
+  height: "100%",
 };
 
 const textFieldStyle = {
-  marginBottom: '10px', // Agrega espacio entre los campos
+  marginBottom: "10px", // Agrega espacio entre los campos
 };
 
 const buttonContainerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between', // Para colocar los botones en la misma línea
-  alignItems: 'center',
-  marginTop: '10px',
+  display: "flex",
+  justifyContent: "space-between", // Para colocar los botones en la misma línea
+  alignItems: "center",
+  marginTop: "10px",
 };
 
 class App extends Component {
@@ -37,12 +38,12 @@ class App extends Component {
     super(props);
 
     this.state = {
-      nombre: '',
-      cedula: '',
-      loteriaSeleccionada: '4 números',
-      numeroJugador: '',
-      apuesta: '',
-      resultado: '',
+      nombre: "",
+      cedula: "",
+      loteriaSeleccionada: "4 números",
+      numeroJugador: "",
+      apuesta: "",
+      resultado: "",
       numeroMaquina: null,
       ganancias: 0,
     };
@@ -53,28 +54,45 @@ class App extends Component {
     const cedula = this.state.cedula;
     const numeroText = this.state.numeroJugador;
     const loteriaSeleccionada = this.state.loteriaSeleccionada;
-    const apuestaText = this.state.apuesta.replace(',', ''); // Elimina las comas de miles
+    const apuestaText = this.state.apuesta.replace(",", ""); // Elimina las comas de miles
 
     if (!nombre.match(/^[a-zA-Z\s]+$/)) {
-      this.setState({ resultado: 'El nombre solo debe contener letras.' });
+      this.setState({ resultado: "El nombre solo debe contener letras." });
       return;
     }
 
     if (!cedula.match(/^[0-9]{6,15}$/)) {
       this.setState({
-        resultado: 'Ingresa una cédula válida.',
+        resultado: "Ingresa una cédula válida de 6 a 15 dígitos.",
       });
       return;
     }
 
     if (!numeroText.match(/^[0-9]+$/)) {
-      this.setState({ resultado: 'El número debe contener solo números.' });
+      this.setState({ resultado: "El número debe contener solo números." });
+      return;
+    }
+
+    // Validar que el número del jugador tenga la misma cantidad de dígitos que seleccionó
+    const digitosLoteria =
+      loteriaSeleccionada === "4 números"
+        ? 4
+        : loteriaSeleccionada === "6 números"
+        ? 6
+        : loteriaSeleccionada === "8 números"
+        ? 8
+        : 0;
+
+    if (numeroText.length !== digitosLoteria) {
+      this.setState({
+        resultado: `El número debe tener ${digitosLoteria} dígitos para la lotería seleccionada.`,
+      });
       return;
     }
 
     if (!apuestaText.match(/^[0-9]+$/)) {
       this.setState({
-        resultado: 'El valor de apuesta debe contener solo números.',
+        resultado: "El valor de apuesta debe contener solo números.",
       });
       return;
     }
@@ -82,26 +100,13 @@ class App extends Component {
     const numeroJugador = parseInt(numeroText, 10);
     const apuesta = parseFloat(apuestaText);
 
-    let numeroLoteria;
-    let digitosLoteria;
-    switch (loteriaSeleccionada) {
-      case '4 números':
-        numeroLoteria = Math.floor(Math.random() * 10000);
-        digitosLoteria = 4;
-        break;
-      case '6 números':
-        numeroLoteria = Math.floor(Math.random() * 1000000);
-        digitosLoteria = 6;
-        break;
-      case '8 números':
-        numeroLoteria = Math.floor(Math.random() * 100000000);
-        digitosLoteria = 8;
-        break;
-      default:
-        numeroLoteria = 0;
-        digitosLoteria = 0;
-        break;
-    }
+    const min = Math.pow(10, digitosLoteria - 1);
+    const max = Math.pow(10, digitosLoteria) - 1;
+    let numeroLoteria = Math.floor(min + Math.random() * (max - min + 1)); // Generar números con la cantidad de dígitos seleccionada
+
+    this.setState({
+      numeroMaquina: numeroLoteria,
+    });
 
     this.setState({
       numeroMaquina: numeroLoteria,
@@ -109,15 +114,15 @@ class App extends Component {
 
     if (numeroJugador === numeroLoteria) {
       const factorGanancia =
-        loteriaSeleccionada === '4 números'
+        loteriaSeleccionada === "4 números"
           ? 3
-          : loteriaSeleccionada === '6 números'
+          : loteriaSeleccionada === "6 números"
           ? 6
           : 20;
       const ganancias = apuesta * factorGanancia;
-      const gananciasFormateadas = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
+      const gananciasFormateadas = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
       }).format(ganancias);
 
       this.setState({
@@ -126,11 +131,10 @@ class App extends Component {
       });
     } else {
       this.setState({
-        resultado: 'Perdiste. Inténtalo de nuevo.',
+        resultado: "Perdiste. Inténtalo de nuevo.",
       });
     }
   };
-
 
   render() {
     return (
@@ -189,14 +193,14 @@ class App extends Component {
               <div style={buttonContainerStyle}>
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: 'orange', color: 'white' }}
+                  style={{ backgroundColor: "orange", color: "white" }}
                   onClick={this.jugarLoteria}
                 >
                   ¡Jugar!
                 </Button>
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: 'blue', color: 'white' }}
+                  style={{ backgroundColor: "blue", color: "white" }}
                   onClick={() => window.location.reload()}
                 >
                   Cerrar
@@ -208,18 +212,26 @@ class App extends Component {
                 )}
                 {this.state.numeroMaquina && (
                   <Typography>
-                    Número de la lotería de{' '}
-                    {this.state.loteriaSeleccionada.split(' ')[0]} números:{' '}
+                    Número de la lotería de{" "}
+                    {this.state.loteriaSeleccionada.split(" ")[0]} números:{" "}
                     {this.state.numeroMaquina}
                   </Typography>
                 )}
                 {this.state.ganancias > 0 && (
                   <Typography>
-                    ¡Felicidades! Has ganado {this.state.ganancias > 1 ? '$' : 'un dólar'}{this.state.ganancias}.
+                    ¡Felicidades! Has ganado{" "}
+                    {this.state.ganancias > 1 ? "$" : "un dólar"}
+                    {this.state.ganancias}.
                   </Typography>
                 )}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "20px",
+                }}
+              >
                 <Button
                   variant="contained"
                   color="primary"
