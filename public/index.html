@@ -7,37 +7,54 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Juega a la Lotería y gana premios emocionantes en Lotería App."
     />
+    <meta name="keywords" content="lotería, juego, diversión, premios" />
+    <meta name="author" content="Tu Nombre" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    <title>Lotería App</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-image: url("https://img.freepik.com/vector-gratis/gradiente-fondo-abstracto_23-2149958461.jpg?w=1060&t=st=1698111978~exp=1698112578~hmac=b6c206eb753b506eb277acab34a137164b7777c37f85bc705d48495d45ebd1cd");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+      .card {
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px auto;
+        max-width: 600px;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      .card h1 {
+        text-align: center;
+      }
+      .card p {
+        text-align: center;
+      }
+      .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div class="card">
+      <h1>Lotería App</h1>
+      <p>Bienvenido a la emocionante Lotería App. ¡Juega y gana premios!</p>
+      <hr />
+      <div id="root" class="form-container"></div>
+    </div>
     <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    Este HTML es una plantilla para la aplicación de Lotería.
+    Asegúrate de tener JavaScript habilitado para disfrutar del juego.
+  --></body>
 </html>
