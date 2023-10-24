@@ -6,7 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -24,9 +23,86 @@ class App extends Component {
   }
 
   jugarLoteria = () => {
-    // Implement the logic for playing the lottery here
-    // You can use this.state to access the form inputs and update the results
-    // For example, set this.state.resultado with the result message.
+    const nombre = this.state.nombre;
+    const cedula = this.state.cedula;
+    const numeroText = this.state.numeroJugador;
+    const loteriaSeleccionada = this.state.loteriaSeleccionada;
+    const apuestaText = this.state.apuesta.replace(',', ''); // Elimina las comas de miles
+
+    if (!nombre.match(/^[a-zA-Z]+$/)) {
+      this.setState({ resultado: 'El nombre solo debe contener letras.' });
+      return;
+    }
+
+    if (!cedula.match(/^[0-9]{8,10}$/)) {
+      this.setState({
+        resultado: 'La cédula debe contener entre 8 y 10 números.',
+      });
+      return;
+    }
+
+    if (!numeroText.match(/^[0-9]+$/)) {
+      this.setState({ resultado: 'El número debe contener solo números.' });
+      return;
+    }
+
+    if (!apuestaText.match(/^[0-9]+$/)) {
+      this.setState({
+        resultado: 'El valor de apuesta debe contener solo números.',
+      });
+      return;
+    }
+
+    const numeroJugador = parseInt(numeroText, 10);
+    const apuesta = parseFloat(apuestaText);
+
+    let numeroLoteria;
+    let digitosLoteria;
+    switch (loteriaSeleccionada) {
+      case '4 números':
+        numeroLoteria = Math.floor(Math.random() * 10000);
+        digitosLoteria = 4;
+        break;
+      case '6 números':
+        numeroLoteria = Math.floor(Math.random() * 1000000);
+        digitosLoteria = 6;
+        break;
+      case '8 números':
+        numeroLoteria = Math.floor(Math.random() * 100000000);
+        digitosLoteria = 8;
+        break;
+      default:
+        numeroLoteria = 0;
+        digitosLoteria = 0;
+        break;
+    }
+
+    this.setState({
+      numeroMaquina: numeroLoteria,
+    });
+
+    if (numeroJugador === numeroLoteria) {
+      const factorGanancia =
+        loteriaSeleccionada === '4 números'
+          ? 3
+          : loteriaSeleccionada === '6 números'
+          ? 6
+          : 20;
+      const ganancias = apuesta * factorGanancia;
+      const gananciasFormateadas = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(ganancias);
+
+      this.setState({
+        resultado: `¡Felicidades! Has ganado ${gananciasFormateadas}.`,
+        ganancias,
+      });
+    } else {
+      this.setState({
+        resultado: 'Perdiste. Inténtalo de nuevo.',
+      });
+    }
   };
 
   reiniciarJuego = () => {
@@ -79,7 +155,9 @@ class App extends Component {
                 variant="outlined"
                 fullWidth
                 value={this.state.numeroJugador}
-                onChange={(e) => this.setState({ numeroJugador: e.target.value })}
+                onChange={(e) =>
+                  this.setState({ numeroJugador: e.target.value })
+                }
               />
               <TextField
                 label="Valor de apuesta ($)"
@@ -103,7 +181,9 @@ class App extends Component {
                 Cerrar
               </Button>
               <div>
-                {this.state.resultado && <Typography>{this.state.resultado}</Typography>}
+                {this.state.resultado && (
+                  <Typography>{this.state.resultado}</Typography>
+                )}
                 {this.state.numeroMaquina && (
                   <Typography>
                     Número de la lotería de{' '}
