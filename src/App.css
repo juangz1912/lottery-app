@@ -1,7 +1,8 @@
-.App {
-  text-align: center;
-}
+/* Estilos globales de la aplicación */
+/* Puedes personalizar los estilos aquí */
+/* Por ejemplo, puedes definir estilos para tu logo */
 
+/* Estilos específicos para el logo */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -13,6 +14,7 @@
   }
 }
 
+/* Estilos específicos para el encabezado */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,10 +26,7 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
+/* Animación para el logo */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
