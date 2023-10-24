@@ -6,6 +6,32 @@ import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+const cardStyle = {
+  background: "url('https://es.pngtree.com/freebackground/close-up-3d-rendering-of-a-classic-casino-roulette-table-with-a-computer-keyboard-and-a-casino-sign-in-the-background_5584580.html') no-repeat center center fixed",
+  backgroundSize: 'contain',
+  opacity: '1',
+};
+
+const formStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  paddingTop: '20px',
+  paddingBottom: '0px',
+  height: '100%',
+};
+
+const textFieldStyle = {
+  marginBottom: '10px', // Agrega espacio entre los campos
+};
+
+const buttonContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between', // Para colocar los botones en la misma línea
+  alignItems: 'center',
+  marginTop: '10px',
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -23,17 +49,93 @@ class App extends Component {
   }
 
   jugarLoteria = () => {
-    // ... (Código de la función jugarLoteria)
+    const nombre = this.state.nombre;
+    const cedula = this.state.cedula;
+    const numeroText = this.state.numeroJugador;
+    const loteriaSeleccionada = this.state.loteriaSeleccionada;
+    const apuestaText = this.state.apuesta.replace(',', ''); // Elimina las comas de miles
+
+    if (!nombre.match(/^[a-zA-Z\s]+$/)) {
+      this.setState({ resultado: 'El nombre solo debe contener letras.' });
+      return;
+    }
+
+    if (!cedula.match(/^[0-9]{6,15}$/)) {
+      this.setState({
+        resultado: 'Ingresa una cédula válida.',
+      });
+      return;
+    }
+
+    if (!numeroText.match(/^[0-9]+$/)) {
+      this.setState({ resultado: 'El número debe contener solo números.' });
+      return;
+    }
+
+    if (!apuestaText.match(/^[0-9]+$/)) {
+      this.setState({
+        resultado: 'El valor de apuesta debe contener solo números.',
+      });
+      return;
+    }
+
+    const numeroJugador = parseInt(numeroText, 10);
+    const apuesta = parseFloat(apuestaText);
+
+    let numeroLoteria;
+    let digitosLoteria;
+    switch (loteriaSeleccionada) {
+      case '4 números':
+        numeroLoteria = Math.floor(Math.random() * 10000);
+        digitosLoteria = 4;
+        break;
+      case '6 números':
+        numeroLoteria = Math.floor(Math.random() * 1000000);
+        digitosLoteria = 6;
+        break;
+      case '8 números':
+        numeroLoteria = Math.floor(Math.random() * 100000000);
+        digitosLoteria = 8;
+        break;
+      default:
+        numeroLoteria = 0;
+        digitosLoteria = 0;
+        break;
+    }
+
+    this.setState({
+      numeroMaquina: numeroLoteria,
+    });
+
+    if (numeroJugador === numeroLoteria) {
+      const factorGanancia =
+        loteriaSeleccionada === '4 números'
+          ? 3
+          : loteriaSeleccionada === '6 números'
+          ? 6
+          : 20;
+      const ganancias = apuesta * factorGanancia;
+      const gananciasFormateadas = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(ganancias);
+
+      this.setState({
+        resultado: `¡Felicidades! Has ganado ${gananciasFormateadas}.`,
+        ganancias,
+      });
+    } else {
+      this.setState({
+        resultado: 'Perdiste. Inténtalo de nuevo.',
+      });
+    }
   };
 
-  reiniciarJuego = () => {
-    // ... (Código de la función reiniciarJuego)
-  };
 
   render() {
     return (
-      <div style={{ background: "url('https://es.pngtree.com/freebackground/close-up-3d-rendering-of-a-classic-casino-roulette-table-with-a-computer-keyboard-and-a-casino-sign-in-the-background_5584580.html') no-repeat center center fixed", backgroundSize: 'cover', height: '100vh', opacity: '1' }}>
-        <Grid container spacing={2} style={{ justifyContent: 'center', alignItems: 'flex-start', paddingTop: '20px', height: '100%' }}>
+      <div style={cardStyle}>
+        <Grid container spacing={2} style={formStyle}>
           <Grid item xs={12}>
             <form noValidate autoComplete="off">
               <TextField
@@ -42,13 +144,15 @@ class App extends Component {
                 fullWidth
                 value={this.state.nombre}
                 onChange={(e) => this.setState({ nombre: e.target.value })}
+                style={textFieldStyle}
               />
               <TextField
-                label="Cédula (8-10 números)"
+                label="Cédula"
                 variant="outlined"
                 fullWidth
                 value={this.state.cedula}
                 onChange={(e) => this.setState({ cedula: e.target.value })}
+                style={textFieldStyle}
               />
               <Select
                 label="Lotería"
@@ -58,6 +162,7 @@ class App extends Component {
                 onChange={(e) =>
                   this.setState({ loteriaSeleccionada: e.target.value })
                 }
+                style={textFieldStyle}
               >
                 <MenuItem value="4 números">4 números</MenuItem>
                 <MenuItem value="6 números">6 números</MenuItem>
@@ -71,6 +176,7 @@ class App extends Component {
                 onChange={(e) =>
                   this.setState({ numeroJugador: e.target.value })
                 }
+                style={textFieldStyle}
               />
               <TextField
                 label="Valor de apuesta ($)"
@@ -78,18 +184,19 @@ class App extends Component {
                 fullWidth
                 value={this.state.apuesta}
                 onChange={(e) => this.setState({ apuesta: e.target.value })}
+                style={textFieldStyle}
               />
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={buttonContainerStyle}>
                 <Button
                   variant="contained"
-                  color="primary"
+                  style={{ backgroundColor: 'orange', color: 'white' }}
                   onClick={this.jugarLoteria}
                 >
                   ¡Jugar!
                 </Button>
                 <Button
                   variant="contained"
-                  color="secondary"
+                  style={{ backgroundColor: 'blue', color: 'white' }}
                   onClick={() => window.location.reload()}
                 >
                   Cerrar
@@ -112,12 +219,12 @@ class App extends Component {
                   </Typography>
                 )}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20px' }}>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={this.reiniciarJuego}
-                  disabled={this.state.ganancias === 0}
+                  enable={this.state.ganancias === 0}
+                  onClick={this.jugarLoteria}
                 >
                   Volver a Jugar
                 </Button>
