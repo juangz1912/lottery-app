@@ -7,28 +7,43 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 const cardStyle = {
-  background:
-    "url('https://es.pngtree.com/freebackground/close-up-3d-rendering-of-a-classic-casino-roulette-table-with-a-computer-keyboard-and-a-casino-sign-in-the-background_5584580.html') no-repeat center center fixed",
-  backgroundSize: "contain",
+  background: "url('/fondo.jpg') no-repeat center center fixed",
   opacity: "1",
+  backgroundColor: "white",
+  backgroundSize: "cover",
+};
+
+const card = {
+  border: "1px solid #ccc",
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+  padding: "20px",
+  borderRadius: "5px",
+  margin: "20px auto",
+  maxWidth: "600px",
+  backgroundColor: "rgba(255, 255, 255, 0.98)",
 };
 
 const formStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  paddingTop: "20px",
-  paddingBottom: "0px",
+  padding: "20px",
   height: "100%",
 };
 
 const textFieldStyle = {
-  marginBottom: "10px", // Agrega espacio entre los campos
+  marginBottom: "10px",
+};
+
+const headerStyle = {
+  fontSize: "24px",
+  fontWeight: "bold",
+  marginBottom: "20px",
 };
 
 const buttonContainerStyle = {
   display: "flex",
-  justifyContent: "space-between", // Para colocar los botones en la misma línea
+  justifyContent: "space-between",
   alignItems: "center",
   marginTop: "10px",
 };
@@ -54,7 +69,7 @@ class App extends Component {
     const cedula = this.state.cedula;
     const numeroText = this.state.numeroJugador;
     const loteriaSeleccionada = this.state.loteriaSeleccionada;
-    const apuestaText = this.state.apuesta.replace(",", ""); // Elimina las comas de miles
+    const apuestaText = this.state.apuesta.replace(",", "");
 
     if (!nombre.match(/^[a-zA-Z\s]+$/)) {
       this.setState({ resultado: "El nombre solo debe contener letras." });
@@ -73,7 +88,6 @@ class App extends Component {
       return;
     }
 
-    // Validar que el número del jugador tenga la misma cantidad de dígitos que seleccionó
     const digitosLoteria =
       loteriaSeleccionada === "4 números"
         ? 4
@@ -102,11 +116,7 @@ class App extends Component {
 
     const min = Math.pow(10, digitosLoteria - 1);
     const max = Math.pow(10, digitosLoteria) - 1;
-    let numeroLoteria = Math.floor(min + Math.random() * (max - min + 1)); // Generar números con la cantidad de dígitos seleccionada
-
-    this.setState({
-      numeroMaquina: numeroLoteria,
-    });
+    let numeroLoteria = Math.floor(min + Math.random() * (max - min + 1));
 
     this.setState({
       numeroMaquina: numeroLoteria,
@@ -139,111 +149,107 @@ class App extends Component {
   render() {
     return (
       <div style={cardStyle}>
-        <Grid container spacing={2} style={formStyle}>
-          <Grid item xs={12}>
-            <form noValidate autoComplete="off">
-              <TextField
-                label="Nombre"
-                variant="outlined"
-                fullWidth
-                value={this.state.nombre}
-                onChange={(e) => this.setState({ nombre: e.target.value })}
-                style={textFieldStyle}
-              />
-              <TextField
-                label="Cédula"
-                variant="outlined"
-                fullWidth
-                value={this.state.cedula}
-                onChange={(e) => this.setState({ cedula: e.target.value })}
-                style={textFieldStyle}
-              />
-              <Select
-                label="Lotería"
-                variant="outlined"
-                fullWidth
-                value={this.state.loteriaSeleccionada}
-                onChange={(e) =>
-                  this.setState({ loteriaSeleccionada: e.target.value })
-                }
-                style={textFieldStyle}
-              >
-                <MenuItem value="4 números">4 números</MenuItem>
-                <MenuItem value="6 números">6 números</MenuItem>
-                <MenuItem value="8 números">8 números</MenuItem>
-              </Select>
-              <TextField
-                label="Tu número"
-                variant="outlined"
-                fullWidth
-                value={this.state.numeroJugador}
-                onChange={(e) =>
-                  this.setState({ numeroJugador: e.target.value })
-                }
-                style={textFieldStyle}
-              />
-              <TextField
-                label="Valor de apuesta ($)"
-                variant="outlined"
-                fullWidth
-                value={this.state.apuesta}
-                onChange={(e) => this.setState({ apuesta: e.target.value })}
-                style={textFieldStyle}
-              />
-              <div style={buttonContainerStyle}>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "orange", color: "white" }}
-                  onClick={this.jugarLoteria}
+        <div style={card}>
+          <Grid container spacing={2} style={formStyle}>
+            <Grid item xs={12}>
+              <form noValidate autoComplete="off">
+                <Typography style={headerStyle}>
+                  Bienvenido a la Lotería. ¡Juega y gana premios!
+                </Typography>
+                <TextField
+                  label="Nombre"
+                  variant="outlined"
+                  fullWidth
+                  value={this.state.nombre}
+                  onChange={(e) => this.setState({ nombre: e.target.value })}
+                  style={textFieldStyle}
+                />
+                <TextField
+                  label="Cédula"
+                  variant="outlined"
+                  fullWidth
+                  value={this.state.cedula}
+                  onChange={(e) => this.setState({ cedula: e.target.value })}
+                  style={textFieldStyle}
+                />
+                <Select
+                  label="Lotería"
+                  variant="outlined"
+                  fullWidth
+                  value={this.state.loteriaSeleccionada}
+                  onChange={(e) =>
+                    this.setState({ loteriaSeleccionada: e.target.value })
+                  }
+                  style={textFieldStyle}
                 >
-                  ¡Jugar!
-                </Button>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "blue", color: "white" }}
-                  onClick={() => window.location.reload()}
-                >
-                  Cerrar
-                </Button>
-              </div>
-              <div>
-                {this.state.resultado && (
-                  <Typography>{this.state.resultado}</Typography>
-                )}
-                {this.state.numeroMaquina && (
-                  <Typography>
-                    Número de la lotería de{" "}
-                    {this.state.loteriaSeleccionada.split(" ")[0]} números:{" "}
-                    {this.state.numeroMaquina}
-                  </Typography>
-                )}
-                {this.state.ganancias > 0 && (
-                  <Typography>
-                    ¡Felicidades! Has ganado{" "}
-                    {this.state.ganancias > 1 ? "$" : "un dólar"}
-                    {this.state.ganancias}.
-                  </Typography>
-                )}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingTop: "20px",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  enable={this.state.ganancias === 0}
-                  onClick={this.jugarLoteria}
-                >
-                  Volver a Jugar
-                </Button>
-              </div>
-            </form>
+                  <MenuItem value="4 números">4 números</MenuItem>
+                  <MenuItem value="6 números">6 números</MenuItem>
+                  <MenuItem value="8 números">8 números</MenuItem>
+                </Select>
+                <TextField
+                  label="Tu número"
+                  variant="outlined"
+                  fullWidth
+                  value={this.state.numeroJugador}
+                  onChange={(e) =>
+                    this.setState({ numeroJugador: e.target.value })
+                  }
+                  style={textFieldStyle}
+                />
+                <TextField
+                  label="Valor de apuesta ($)"
+                  variant="outlined"
+                  fullWidth
+                  value={this.state.apuesta}
+                  onChange={(e) => this.setState({ apuesta: e.target.value })}
+                  style={textFieldStyle}
+                />
+                <div style={buttonContainerStyle}>
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "orange", color: "white" }}
+                    onClick={this.jugarLoteria}
+                  >
+                    ¡Jugar!
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "blue", color: "white" }}
+                    onClick={() => window.location.reload()}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+                <div>
+                  {this.state.resultado && (
+                    <Typography>{this.state.resultado}</Typography>
+                  )}
+                  {this.state.numeroMaquina && (
+                    <Typography>
+                      Número de la lotería de{" "}
+                      {this.state.loteriaSeleccionada.split(" ")[0]} números:{" "}
+                      {this.state.numeroMaquina}
+                    </Typography>
+                  )}
+                  {this.state.ganancias > 0 && (
+                    <Typography>
+                      ¡Felicidades! Has ganado{" "}
+                      {this.state.ganancias > 1 ? "$" : "un dólar"}
+                      {this.state.ganancias}.
+                    </Typography>
+                  )}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    paddingTop: "20px",
+                  }}
+                ></div>
+              </form>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
     );
   }
